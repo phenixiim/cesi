@@ -1,3 +1,25 @@
+function filterTable(nodename) {
+    // Declare variables
+    var input, filter, table, tr, td, i;
+    input = document.getElementById("myInput"+nodename);
+    filter = input.value.toUpperCase();
+    table = document.getElementById("table"+nodename);
+    tr = table.getElementsByTagName("tr");
+
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+
+        if (td) {
+            if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
+
 var $login = function(){
     var $url = "/login/control";
     $.ajax({
@@ -15,7 +37,7 @@ var $login = function(){
                     closeWith: ['click']
                 });
             }else{
-               window.location='/'; 
+               window.location='/';
             }
         },
         complete: function(){
@@ -38,7 +60,7 @@ var $adduser= function(){
                 $( "a > input:checked" ).each(function() {
                     $(this).prop( "checked",false );
                 });
-                
+
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
                 $maindiv.append('<div class="col-lg-4"></div>');
@@ -113,7 +135,7 @@ var $adduserhandler = function(){
             }
         }
     });
-    
+
     $(".adduserform").find('input').each(function(){
         $(this).val("");
     });
@@ -134,7 +156,7 @@ var $showdeluserpage = function(){
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
                 $maindiv.prepend('<div class="login-panel panel panel-default deleteuser"></div>');
-                
+
                 var $panel = $maindiv.children('div').first();
                 $panel.append('<div class="panel-heading"> <h3 class="panel-title">Delete User </h3>  </div>');
                 $panel.append('<div class="panel-body"></div>');
@@ -178,7 +200,7 @@ var $showdeluserpage = function(){
                     closeWith: ['click']
                 });
             }
-        } 
+        }
     });
 }
 
@@ -236,7 +258,7 @@ var $changepassword = function(){
                 $maindiv.append('<div class="col-md-4"></div>');
                 $middlegrid = $(".use");
 
-                $middlegrid.prepend('<div class="login-panel panel panel-default changepassworddiv"></div>'); 
+                $middlegrid.prepend('<div class="login-panel panel panel-default changepassworddiv"></div>');
 
                 var $panel= $middlegrid.children('div').first();
                 $panel.append('<div class="panel-heading"><h3 class="panel-title">Change Password</h3></div>');
@@ -261,7 +283,7 @@ var $changepassword = function(){
 
             }
         }
-    }); 
+    });
 }
 
 var $passwordhandler = function(){
@@ -328,20 +350,20 @@ var $buttonactions = function(){
         success: function(data){
             if(data['status'] == "Success"){
                 if (data['data']['pid'] == 0 ){ $td.html("-"); }else{ $td.html(data['data']['pid']); }
-                    
+
                     if( $place == "node" ){
                         $td = $td.next();
                         $td.html(data['data']['name']);
-                    
+
                         $td = $td.next();
                         $td.html(data['data']['group']);
                     }else{
                         $td = $td.next();
                         $td.html($environment);
-                        
+
                         $td = $td.next();
                         $td.html(data['nodename']);
-                        
+
                         $td = $td.next();
                         $td.html(data['data']['name']);
                     }
@@ -367,7 +389,7 @@ var $buttonactions = function(){
                         $restart.attr('name',$name );
                         $restart.attr('value',"Restart");
                         $restart.html("Restart");
-                        
+
                         $td = $td.next();
                         $stop = $td.children('button').first();
                         $stop.attr('class',"btn btn-primary btn-block");
@@ -453,14 +475,14 @@ var $selectgroupenv = function(){
 
     if(ischecked){
         $checkbox.prop("checked", false);
-        
+
         $(this).parent().parent().find('input').each(function(){
             if($(this).prop('checked') == true){
                 $checkcount = $checkcount + 1;
             }
         });
 
-        if($checkcount == 0){   
+        if($checkcount == 0){
             $( "#group"+$group_name ).remove();
         }else{
             var $tr_u = $( "#group"+$group_name ).find("tr[class*='"+$environment_name+"']");
@@ -500,8 +522,8 @@ var $selectgroupenv = function(){
         });
 
         if($checkcount == 1){
- 
-            $maindiv.prepend('<div class="panel panel-primary panel-custom" id="group'+$group_name+'"></div>'); 
+
+            $maindiv.prepend('<div class="panel panel-primary panel-custom" id="group'+$group_name+'"></div>');
             $panel = $maindiv.children('div').first();
             $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ $group_name +'</div>');
 
@@ -515,7 +537,7 @@ var $selectgroupenv = function(){
             $panel.append('<table class="table table-bordered"></table>');
             $table = $panel.find('table');
             $table.append('<tr class="active"><th>Pid</th> <th>Environment</th> <th>Node name</th> <th>Name</th> <th>Uptime</th> <th>State</th> </tr>');
-            
+
             if($usertype == 0 || $usertype == 1){
                 $table.find('tr').first().prepend('<th><input type="checkbox" class="multiple"></th>');
             }
@@ -527,20 +549,20 @@ var $selectgroupenv = function(){
                 dataType: 'json',
                 success: function(result){
                     for(var $counter = 0; $counter < result['process_list'].length; $counter++){
-            
+
                         var $pid = result['process_list'][$counter][0];
                         var $name = result['process_list'][$counter][1];
                         var $nodename = result['process_list'][$counter][2];
                         var $state = result['process_list'][$counter][4];
                         var $statename = result['process_list'][$counter][5];
                         var $uptime = result['process_list'][$counter][3];
-                
+
                         $table.append('<tr class="'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name+'"></tr>');
                         $tr = $('tr[class="'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name+'"]');
-            
-                        if($usertype == 0 || $usertype == 1){ 
+
+                        if($usertype == 0 || $usertype == 1){
                             //check
-                            $tr.append('<td> <input type="checkbox" class="single" node="'+$nodename+'" procname="'+$group_name+':'+$name+'"> </td>');                        
+                            $tr.append('<td> <input type="checkbox" class="single" node="'+$nodename+'" procname="'+$group_name+':'+$name+'"> </td>');
                         }
                         //pid
                         if($pid == 0){
@@ -551,16 +573,16 @@ var $selectgroupenv = function(){
 
                         //environment
                         $tr.append('<td>'+$environment_name+'</td>');
-        
+
                         // nodename
                         $tr.append('<td>'+$nodename+'</td>');
 
                         //name
                         $tr.append('<td>'+$name+'</td>');
-        
+
                         //Uptime
                         $tr.append('<td>'+$uptime+'</td>');
-        
+
                         //Statename
                         if( $state==0 || $state==40 || $state==100 || $state==200 ){
                             $tr.append('<td class="alert alert-danger">'+$statename+ '</td>');
@@ -569,8 +591,8 @@ var $selectgroupenv = function(){
                         }else{
                             $tr.append('<td class="alert alert-warning">'+$statename+ '</td>');
                         }
-                       
-                        if($usertype == 0 || $usertype == 1 ){ 
+
+                        if($usertype == 0 || $usertype == 1 ){
                             //buttons
                             if( $state==20 ){
                                 $tr.append('<td></td>');
@@ -578,7 +600,7 @@ var $selectgroupenv = function(){
                                 $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/restart" value="Restart">Restart</button>');
                                 var $btn_restart = $td.children('button').first();
                                 $btn_restart.click($buttonactions);
-        
+
                                 $tr.append('<td></td>');
                                 var $td = $tr.children('td').last();
                                 $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/stop" value="Stop">Stop</button>');
@@ -590,7 +612,7 @@ var $selectgroupenv = function(){
                                 $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/start" value="Start">Start</button>');
                                 var $btn_restart = $td.children('button').first();
                                 $btn_restart.click($buttonactions);
-        
+
                                 $tr.append('<td></td>');
                                 var $td = $tr.children('td').last();
                                 $td.append('<button place="group" class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>');
@@ -598,12 +620,12 @@ var $selectgroupenv = function(){
                                 $btn_stop.click($buttonactions);
                             }
                         }
-    
+
                         if($usertype == 0 || $usertype == 1 || $usertype == 2 ){
                             //Readlog
                              $tr.append('<td><a class="btn btn-primary btn-block act" nodename="'+$nodename+'" processgroup="'+$group_name+'" processname="'+$name+'" url="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/readlog"> Readlog </a></td>');
                              var $readlog = $tr.children('td').last().children('a').first();
-    
+
                              $readlog.click(function(){
                                  var url=$(this).attr('url');
                                  var nodename=$(this).attr('nodename');
@@ -612,7 +634,7 @@ var $selectgroupenv = function(){
                                  var classname = nodename+"_"+processgroup+"_"+processname
                                  var $dia = $("."+classname);
                                  var timer;
-     
+
                                  if($dia.length==0){
                                      $logdiv.append('<div class="'+classname+'"></div>');
                                      $dia = $("."+classname);
@@ -634,7 +656,7 @@ var $selectgroupenv = function(){
                                                              }
                                                          });
                                                      },1000);
-                                                 }, 
+                                                 },
                                                  close: function(){
                                                      clearInterval(timer);
                                                  },
@@ -671,8 +693,8 @@ var $selectgroupenv = function(){
                                          }
                                      }
                                  });
-                             }); 
-                        }    
+                             });
+                        }
                     }
                 }
             });
@@ -708,14 +730,14 @@ var $selectgroupenv = function(){
                             $tr.children('td').first().next().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
                             $tr.children('td').first().next().next().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
                         }else{
-                        
+
                             $grouptable.append('<tr class="'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name+'"></tr>');
                             $tr = $('.'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name);
-                        
+
                             if($usertype == 0 || $usertype == 1){
                             	//check
                             	$tr.append('<td> <input type="checkbox" class="single" node="'+$nodename+'" procname="'+$group_name+':'+$name+'"> </td>');
-                            }                    
+                            }
                             //pid
                             if($pid == 0){
                                 $tr.append('<td> - </td>');
@@ -725,16 +747,16 @@ var $selectgroupenv = function(){
 
                             //environment
                             $tr.append('<td>'+$environment_name+'</td>');
-    
+
                             // nodename
                             $tr.append('<td>'+$nodename+'</td>');
-    
+
                             //name
                             $tr.append('<td>'+$name+'</td>');
-    
+
                             //Uptime
                                 $tr.append('<td>'+$uptime+'</td>');
-    
+
                             //Statename
                             if( $state==0 || $state==40 || $state==100 || $state==200 ){
                                 $tr.append('<td class="alert alert-danger">'+$statename+ '</td>');
@@ -743,7 +765,7 @@ var $selectgroupenv = function(){
                             }else{
                                 $tr.append('<td class="alert alert-warning">'+$statename+ '</td>');
                             }
-   			    if($usertype == 0 || $usertype == 1){ 
+   			    if($usertype == 0 || $usertype == 1){
                             //buttons
                                 if( $state==20 ){
                                     $tr.append('<td></td>');
@@ -751,7 +773,7 @@ var $selectgroupenv = function(){
                                         $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/restart" value="Restart">Restart</button>');
                                 var $btn_restart = $td.children('button').first();
                                     $btn_restart.click($buttonactions);
-      
+
                                     $tr.append('<td></td>');
                                     var $td = $tr.children('td').last();
                                     $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/stop" value="Stop">Stop</button>');
@@ -763,7 +785,7 @@ var $selectgroupenv = function(){
                                     $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/start" value="Start">Start</button>');
                                     var $btn_restart = $td.children('button').first();
                                     $btn_restart.click($buttonactions);
-      
+
                                     $tr.append('<td></td>');
                                     var $td = $tr.children('td').last();
                                     $td.append('<button place="group" class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>');
@@ -771,12 +793,12 @@ var $selectgroupenv = function(){
                                     $btn_stop.click($buttonactions);
                                 }
 			    }
-    
+
 			    if($usertype == 0 || $usertype == 1 || $usertype == 2){
                             //Readlog
                             $tr.append('<td><a class="btn btn-primary btn-block act" nodename="'+$nodename+'" processgroup="'+$group_name+'" processname="'+$name+'" url="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/readlog"> Readlog </a></td>');
                             var $readlog = $tr.children('td').last().children('a').first();
-    
+
                             $readlog.click(function(){
                                 var url=$(this).attr('url');
                                 var nodename=$(this).attr('nodename');
@@ -785,7 +807,7 @@ var $selectgroupenv = function(){
                                 var classname = nodename+"_"+processgroup+"_"+processname
                                 var $dia = $("."+classname);
                                 var timer;
-    
+
                             if($dia.length==0){
                                     $logdiv.append('<div class="'+classname+'"></div>');
                                     $dia = $("."+classname);
@@ -847,7 +869,7 @@ var $selectgroupenv = function(){
                 }
             });
         }
-    }    
+    }
 }
 
 var $selectnode = function(){
@@ -856,7 +878,7 @@ var $selectnode = function(){
     var $maindiv = $("#maindiv");
     var $dashboardiv = $(".dash");
     $dashboardiv.empty();
-    
+
     var $logdiv = $("#dialog");
     $logdiv.empty();
 
@@ -959,7 +981,7 @@ var $selectnode = function(){
         $panel.remove();
     });
 
-    $appendlist.forEach(function(nodename) { 
+    $appendlist.forEach(function(nodename) {
         var $url = "/node/"+nodename
         $.ajax({
             url: $url,
@@ -970,11 +992,12 @@ var $selectnode = function(){
                 $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ nodename +'</div>');
 
                 if($usertype == 0 || $usertype == 1){
-                    $panel.children('div').first().append('<div style="float:right;"><button class="btn btn-warning btn-sm multibtn" name="restart" >Restart</button><button class="btn btn-warning btn-sm multibtn" name="start" >Start</button><button class="btn btn-warning btn-sm multibtn" name="stop" >Stop</button></div>'); 
+                    $panel.children('div').first().append('<div style="float:right;"><button class="btn btn-warning btn-sm multibtn" name="restart" >Restart</button><button class="btn btn-warning btn-sm multibtn" name="start" >Start</button><button class="btn btn-warning btn-sm multibtn" name="stop" >Stop</button></div>');
                     $panel.find("button[class~='multibtn']").each(function(){
                         $(this).click($multievent);
                     });
                 }
+                $panel.append('<input type="text" id="myInput'+nodename+'" size="40" onkeyup="filterTable(\''+nodename+'\')" placeholder="Search for process, pid, group or state..">');
                 $panel.append('<table class="table table-bordered" data-filtering="true" id="table'+nodename+'" ></table>');
                 var $table = $("#table"+nodename);
                 $table.append('<tr class="active"><th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State</th><th>Actions</th><th>Actions2</th><th>Actions3</th> </tr>');
@@ -995,7 +1018,7 @@ var $selectnode = function(){
                     var $statename = result['process_info'][$counter]['statename'];
                     if($usertype == 0 || $usertype == 1){
                         //check
-                        $tr_p.append('<td> <input type="checkbox" class="single" node="'+nodename+'" procname="'+$group+':'+$name+'"> </td>');
+                        $tr_p.append('<td> <input type="checkbox" class="single" node="'+nodename+'" procname="'+$group+':'+$name+'" data-pid="'+$pid+'" data-state="'+$statename+'"> </td>');
                     }
                     //pid
                     if( $pid == 0 ){
@@ -1055,7 +1078,7 @@ var $selectnode = function(){
                         //Readlog
                         $tr_p.append('<td><a class="btn btn-primary btn-block act" nodename="'+nodename+'" processgroup="'+$group+'" processname="'+$name+'" url="/node/'+nodename+'/process/'+$group+':'+$name+'/readlog"> Readlog </a></td>');
                         var $readlog = $tr_p.children('td').last().children('a').first();
-    
+
                         $readlog.click(function(){
                             var url=$(this).attr('url');
                             var nodename=$(this).attr('nodename');
@@ -1121,15 +1144,13 @@ var $selectnode = function(){
                                             type: 'warning',
                                             closeWith: ['click']
                                         });
-    
+
                                     }
                                 }
                             });
                         });
                     }
                 }
-
-                $panel.append('<script type="text/javascript">var dataTable = new DataTable("#table' + nodename + '");</script>');
             }
         });
     });
@@ -1137,10 +1158,13 @@ var $selectnode = function(){
 
 var $multiplecheckbox = function(){
     var $checkstatus = $(this).prop('checked');
-    $table = $(this).parent().parent().parent().parent();
+    $table = $(this).parent().parent().parent();
 
     $table.find("input[class='single']").each(function(){
-        $(this).prop('checked', $checkstatus);
+        var display = $(this).parent().parent().css('display');
+        if(display != 'none') {
+            $(this).prop('checked', $checkstatus);
+        }
     });
 }
 
@@ -1161,11 +1185,11 @@ var $multievent = function(){
                 success: function(data){
                     if(data['status'] == "Success"){
                         if (data['data']['pid'] == 0 ){ $td.html("-"); }else{ $td.html(data['data']['pid']); }
-    
+
                             if( $place == "node" ){
                                 $td = $td.next();
                                 $td.html(data['data']['name']);
-        
+
                                 $td = $td.next();
                                 $td.html(data['data']['group']);
                             }else{
@@ -1191,7 +1215,7 @@ var $multievent = function(){
                                 $td.attr('class', "alert alert-warning");
                             }
                             $td.html(data['data']['statename']);
-    
+
                             $td = $td.next();
                             if( data['data']['state']==20){
                                 $restart = $td.children('button').first();
@@ -1200,7 +1224,7 @@ var $multievent = function(){
                                 $restart.attr('name',$name );
                                 $restart.attr('value',"Restart");
                                 $restart.html("Restart");
-    
+
                                 $td = $td.next();
                                 $stop = $td.children('button').first();
                                 $stop.attr('class',"btn btn-primary btn-block");
@@ -1222,7 +1246,7 @@ var $multievent = function(){
                                 $stop.attr('name'," ");
                                 $stop.attr('value',"Stop");
                             }
-                        
+
                         noty({
                             layout: 'bottom',
                             text: data['message'],
@@ -1240,7 +1264,7 @@ var $multievent = function(){
                         });
                     }
                 }
-            }); 
+            });
         }
     });
 }
@@ -1283,8 +1307,8 @@ $( document ).ready(function() {
 $(window).unload(function(){
     $( "input:checked" ).each(function() {
         $(this).prop( "checked",false );
-    });   
-    
+    });
 
- 
+
+
 });
