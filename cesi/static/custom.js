@@ -315,6 +315,7 @@ var $buttonactions = function(){
     var $url = $(this).attr('name');
     var $place = $(this).attr('place');
     var $environment = $(this).attr('env');
+
     $.ajax({
         beforeSend: function(){
             button.prepend('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> ');
@@ -974,10 +975,9 @@ var $selectnode = function(){
                         $(this).click($multievent);
                     });
                 }
-                
-                $panel.append('<table class="table table-bordered" id="table'+nodename+'" ></table>');
+                $panel.append('<table class="table table-bordered" data-filtering="true" id="table'+nodename+'" ></table>');
                 var $table = $("#table"+nodename);
-                $table.append('<tr class="active"><th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State</th> </tr>');
+                $table.append('<tr class="active"><th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State</th><th>Actions</th><th>Actions2</th><th>Actions3</th> </tr>');
                 if($usertype == 0 || $usertype == 1){
                     $table.find('tr').first().prepend('<th><input type="checkbox" class="multiple"></th>');
                 }
@@ -1128,14 +1128,16 @@ var $selectnode = function(){
                         });
                     }
                 }
-            }  
+
+                $panel.append('<script type="text/javascript">var dataTable = new DataTable("#table' + nodename + '");</script>');
+            }
         });
     });
 }
 
 var $multiplecheckbox = function(){
     var $checkstatus = $(this).prop('checked');
-    $table = $(this).parent().parent().parent();
+    $table = $(this).parent().parent().parent().parent();
 
     $table.find("input[class='single']").each(function(){
         $(this).prop('checked', $checkstatus);
